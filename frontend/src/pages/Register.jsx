@@ -1,3 +1,4 @@
+// File: frontend/src/pages/Register.jsx
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { API_URL } from "../config"
@@ -22,6 +23,10 @@ export default function Register() {
       const data = await res.json()
       if (res.ok) {
         localStorage.setItem("token", data.token)
+        // Store user info based on role
+        const user = data.user || data.dev || data.admin
+        localStorage.setItem("username", user.name)
+        localStorage.setItem("userRole", role)
         navigate("/")
       } else {
         alert(data.msg || "Registration failed")
@@ -32,6 +37,12 @@ export default function Register() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const roleInfo = {
+    user: { emoji: '👤', label: 'User', description: '🎮 Browse and purchase indie games' },
+    developer: { emoji: '👨‍💻', label: 'Developer', description: '🚀 Upload and manage your own games' },
+    admin: { emoji: '⚡', label: 'Admin', description: '🛡️ Manage platform and moderate content' }
   }
 
   return (
@@ -185,54 +196,43 @@ export default function Register() {
             </label>
             <div style={{ 
               display: 'grid', 
-              gridTemplateColumns: '1fr 1fr', 
-              gap: '1rem' 
+              gridTemplateColumns: 'repeat(3, 1fr)', 
+              gap: '0.75rem' 
             }}>
-              <button
-                type="button"
-                onClick={() => setRole('user')}
-                style={{
-                  padding: '0.9rem',
-                  borderRadius: '10px',
-                  border: `2px solid ${role === 'user' ? '#a259ff' : '#333'}`,
-                  backgroundColor: role === 'user' ? 'rgba(162, 89, 255, 0.2)' : '#0d0d0f',
-                  color: role === 'user' ? '#a259ff' : '#aaa',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s'
-                }}
-              >
-                👤 User
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole('developer')}
-                style={{
-                  padding: '0.9rem',
-                  borderRadius: '10px',
-                  border: `2px solid ${role === 'developer' ? '#a259ff' : '#333'}`,
-                  backgroundColor: role === 'developer' ? 'rgba(162, 89, 255, 0.2)' : '#0d0d0f',
-                  color: role === 'developer' ? '#a259ff' : '#aaa',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s'
-                }}
-              >
-                👨‍💻 Developer
-              </button>
+              {Object.entries(roleInfo).map(([roleKey, info]) => (
+                <button
+                  key={roleKey}
+                  type="button"
+                  onClick={() => setRole(roleKey)}
+                  style={{
+                    padding: '0.9rem 0.5rem',
+                    borderRadius: '10px',
+                    border: `2px solid ${role === roleKey ? '#a259ff' : '#333'}`,
+                    backgroundColor: role === roleKey ? 'rgba(162, 89, 255, 0.2)' : '#0d0d0f',
+                    color: role === roleKey ? '#a259ff' : '#aaa',
+                    fontSize: '0.95rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '0.3rem'
+                  }}
+                >
+                  <span style={{ fontSize: '1.5rem' }}>{info.emoji}</span>
+                  <span>{info.label}</span>
+                </button>
+              ))}
             </div>
             <p style={{ 
               fontSize: '0.8rem', 
               color: '#888', 
               marginTop: '0.5rem',
-              fontStyle: 'italic'
+              fontStyle: 'italic',
+              textAlign: 'center'
             }}>
-              {role === 'user' 
-                ? '🎮 Browse and purchase indie games' 
-                : '🚀 Upload and manage your own games'
-              }
+              {roleInfo[role].description}
             </p>
           </div>
 

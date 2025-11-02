@@ -1,4 +1,6 @@
 // Path: src/App.jsx
+import ManageUsers from "./pages/ManageUsers.jsx"
+import ManageGames from "./pages/ManageGames.jsx"
 import { Routes, Route } from "react-router-dom"
 import Navbar from "./components/Navbar.jsx"
 import ProtectedRoute from "./components/ProtectedRoute.jsx"
@@ -38,6 +40,8 @@ function App() {
           <Route path="/developer/dashboard" element={<ProtectedRoute><DeveloperDashboard /></ProtectedRoute>} />
           <Route path="/upload" element={<ProtectedRoute><UploadGame /></ProtectedRoute>} />
           <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute><ManageUsers /></ProtectedRoute>} />
+<Route path="/admin/games" element={<ProtectedRoute><ManageGames /></ProtectedRoute>} />
 
           <Route path="/game/:gameId/chat" element={<ProtectedRoute><GameChat /></ProtectedRoute>} />
 

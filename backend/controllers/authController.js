@@ -1,10 +1,11 @@
+// File: backend/controllers/authController.js
 import User from '../models/User.js'
 import Developer from '../models/Developer.js'
+import Admin from '../models/Admin.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import sendMail from "../utils/sendMail.js";
-import crypto from "crypto";
-
+import sendMail from "../utils/sendMail.js"
+import crypto from "crypto"
 
 export const register = async (req, res) => {
   const { name, email, password, role } = req.body
@@ -18,72 +19,87 @@ export const register = async (req, res) => {
       const dev = await Developer.create({ name, email, password: hashed, role })
       const token = jwt.sign({ id: dev._id, role }, process.env.JWT_SECRET, { expiresIn: '7d' })
       res.json({ msg: 'Developer registered', dev, token })
-    } else res.status(400).json({ msg: 'Invalid role' })
-  } catch (err) { res.status(400).json({ msg: err.message }) }
+    } else if (role === 'admin') {
+      const admin = await Admin.create({ name, email, password: hashed, role })
+      const token = jwt.sign({ id: admin._id, role }, process.env.JWT_SECRET, { expiresIn: '7d' })
+      res.json({ msg: 'Admin registered', admin, token })
+    } else {
+      res.status(400).json({ msg: 'Invalid role' })
+    }
+  } catch (err) { 
+    res.status(400).json({ msg: err.message }) 
+  }
 }
 
 export const login = async (req, res) => {
   const { email, password, role } = req.body
   try {
-    const model = role === 'user' ? User : Developer
+    let model
+    if (role === 'user') model = User
+    else if (role === 'developer') model = Developer
+    else if (role === 'admin') model = Admin
+    else return res.status(400).json({ msg: 'Invalid role' })
+    
     const user = await model.findOne({ email })
     if (!user) return res.status(400).json({ msg: 'User not found' })
+    
     const match = await bcrypt.compare(password, user.password)
     if (!match) return res.status(400).json({ msg: 'Invalid password' })
+    
     const token = jwt.sign({ id: user._id, role }, process.env.JWT_SECRET, { expiresIn: '7d' })
     res.json({ token, user })
-  } catch (err) { res.status(500).json({ msg: err.message }) }
+  } catch (err) { 
+    res.status(500).json({ msg: err.message }) 
+  }
 }
 
-
 const findAccountByEmail = async (email) => {
-  let account = await User.findOne({ email });
-  if (!account) {
-    account = await Developer.findOne({ email });
-  }
-  return account;
-};
+  let account = await User.findOne({ email })
+  if (!account) account = await Developer.findOne({ email })
+  if (!account) account = await Admin.findOne({ email })
+  return account
+}
 
 // Forgot Password (send OTP)
 export const forgotPassword = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email } = req.body
 
-    const account = await findAccountByEmail(email);
+    const account = await findAccountByEmail(email)
     if (!account) {
-      return res.status(404).json({ message: "Account not found" });
+      return res.status(404).json({ message: "Account not found" })
     }
 
     // Generate 6-digit OTP
-    const otp = crypto.randomInt(100000, 999999).toString();
+    const otp = crypto.randomInt(100000, 999999).toString()
 
     // Save OTP + expiry (10 mins)
-    account.resetPasswordOTP = otp;
-    account.resetPasswordExpiry = Date.now() + 10 * 60 * 1000;
-    await account.save();
+    account.resetPasswordOTP = otp
+    account.resetPasswordExpiry = Date.now() + 10 * 60 * 1000
+    await account.save()
 
     // Send email
     await sendMail(
       email,
       "Password Reset OTP",
       `Your OTP is ${otp}. It is valid for 10 minutes.`
-    );
+    )
 
-    res.json({ message: "OTP sent to your email" });
+    res.json({ message: "OTP sent to your email" })
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error(error)
+    res.status(500).json({ message: "Server error" })
   }
-};
+}
 
 // Reset Password
 export const resetPassword = async (req, res) => {
   try {
-    const { email, otp, newPassword } = req.body;
+    const { email, otp, newPassword } = req.body
 
-    const account = await findAccountByEmail(email);
+    const account = await findAccountByEmail(email)
     if (!account) {
-      return res.status(404).json({ message: "Account not found" });
+      return res.status(404).json({ message: "Account not found" })
     }
 
     // Validate OTP & expiry
@@ -91,22 +107,22 @@ export const resetPassword = async (req, res) => {
       account.resetPasswordOTP !== otp ||
       account.resetPasswordExpiry < Date.now()
     ) {
-      return res.status(400).json({ message: "Invalid or expired OTP" });
+      return res.status(400).json({ message: "Invalid or expired OTP" })
     }
 
     // Hash new password
-    const salt = await bcrypt.genSalt(10);
-    account.password = await bcrypt.hash(newPassword, salt);
+    const salt = await bcrypt.genSalt(10)
+    account.password = await bcrypt.hash(newPassword, salt)
 
     // Clear OTP fields
-    account.resetPasswordOTP = undefined;
-    account.resetPasswordExpiry = undefined;
+    account.resetPasswordOTP = undefined
+    account.resetPasswordExpiry = undefined
 
-    await account.save();
+    await account.save()
 
-    res.json({ message: "Password reset successful" });
+    res.json({ message: "Password reset successful" })
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error(error)
+    res.status(500).json({ message: "Server error" })
   }
-};
+}

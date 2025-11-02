@@ -47,7 +47,7 @@ export default function Navbar() {
           <>
             {/* Display username */}
             <span className={styles.username}>
-              {userRole === 'developer' ? '👨‍💻' : '👤'} {username}
+              {userRole === 'developer' ? '👨‍💻' : userRole === 'admin' ? '⚡' : '👤'} {username}
             </span>
             
             <Link to="/">Home</Link>
@@ -69,9 +69,13 @@ export default function Navbar() {
               </>
             )}
             
-            {/* Admin link - for future use */}
+            {/* Admin-only links */}
             {userRole === 'admin' && (
-              <Link to="/admin/dashboard">Admin</Link>
+              <>
+                <Link to="/admin/dashboard">Dashboard</Link>
+                <Link to="/admin/users">Manage Users</Link>
+                <Link to="/admin/games">Manage Games</Link>
+              </>
             )}
             
             <button onClick={handleLogout} className={styles.logoutBtn}>Logout</button>

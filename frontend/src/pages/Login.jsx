@@ -167,42 +167,74 @@ export default function Login() {
             </label>
             <div style={{ 
               display: 'grid', 
-              gridTemplateColumns: '1fr 1fr', 
-              gap: '1rem' 
+              gridTemplateColumns: 'repeat(3, 1fr)', 
+              gap: '0.75rem' 
             }}>
               <button
                 type="button"
                 onClick={() => setRole('user')}
                 style={{
-                  padding: '0.9rem',
+                  padding: '0.9rem 0.5rem',
                   borderRadius: '10px',
                   border: `2px solid ${role === 'user' ? '#a259ff' : '#333'}`,
                   backgroundColor: role === 'user' ? 'rgba(162, 89, 255, 0.2)' : '#0d0d0f',
                   color: role === 'user' ? '#a259ff' : '#aaa',
-                  fontSize: '1rem',
+                  fontSize: '0.95rem',
                   fontWeight: '600',
                   cursor: 'pointer',
-                  transition: 'all 0.3s'
+                  transition: 'all 0.3s',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '0.3rem'
                 }}
               >
-                👤 User
+                <span style={{ fontSize: '1.5rem' }}>👤</span>
+                <span>User</span>
               </button>
               <button
                 type="button"
                 onClick={() => setRole('developer')}
                 style={{
-                  padding: '0.9rem',
+                  padding: '0.9rem 0.5rem',
                   borderRadius: '10px',
                   border: `2px solid ${role === 'developer' ? '#a259ff' : '#333'}`,
                   backgroundColor: role === 'developer' ? 'rgba(162, 89, 255, 0.2)' : '#0d0d0f',
                   color: role === 'developer' ? '#a259ff' : '#aaa',
-                  fontSize: '1rem',
+                  fontSize: '0.95rem',
                   fontWeight: '600',
                   cursor: 'pointer',
-                  transition: 'all 0.3s'
+                  transition: 'all 0.3s',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '0.3rem'
                 }}
               >
-                👨‍💻 Developer
+                <span style={{ fontSize: '1.5rem' }}>👨‍💻</span>
+                <span>Developer</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('admin')}
+                style={{
+                  padding: '0.9rem 0.5rem',
+                  borderRadius: '10px',
+                  border: `2px solid ${role === 'admin' ? '#a259ff' : '#333'}`,
+                  backgroundColor: role === 'admin' ? 'rgba(162, 89, 255, 0.2)' : '#0d0d0f',
+                  color: role === 'admin' ? '#a259ff' : '#aaa',
+                  fontSize: '0.95rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '0.3rem'
+                }}
+              >
+                <span style={{ fontSize: '1.5rem' }}>⚡</span>
+                <span>Admin</span>
               </button>
             </div>
           </div>
