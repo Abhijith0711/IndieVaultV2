@@ -99,10 +99,6 @@ export default function GameChat({ gameId, gameName }) {
     return () => clearInterval(interval);
   }, [gameId]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
   const getRoleBadgeColor = (role) => {
     switch(role) {
       case 'developer': return '#a259ff';

@@ -14,6 +14,7 @@ import Library from "./pages/Library.jsx"
 import DeveloperDashboard from "./pages/DeveloperDashboard.jsx"
 import UploadGame from "./pages/UploadGame.jsx"
 import AdminDashboard from "./pages/AdminDashboard.jsx"
+import EditGame from "./pages/EditGame.jsx"
 
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -38,6 +39,7 @@ function App() {
           <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
           <Route path="/library" element={<ProtectedRoute><Library /></ProtectedRoute>} />
           <Route path="/developer/dashboard" element={<ProtectedRoute><DeveloperDashboard /></ProtectedRoute>} />
+          <Route path="/edit-game/:gameId" element={<ProtectedRoute><EditGame /></ProtectedRoute>} />
           <Route path="/upload" element={<ProtectedRoute><UploadGame /></ProtectedRoute>} />
           <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/users" element={<ProtectedRoute><ManageUsers /></ProtectedRoute>} />

@@ -1,3 +1,5 @@
+// File: backend/routes/authRoutes.js
+
 import { Router } from 'express'
 import { register, login ,forgotPassword, resetPassword } from '../controllers/authController.js'
 
