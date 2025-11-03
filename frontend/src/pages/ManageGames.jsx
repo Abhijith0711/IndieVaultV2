@@ -49,7 +49,7 @@ export default function ManageGames() {
 
   const filteredGames = games.filter(game =>
     game.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    game.developer?.toLowerCase().includes(searchTerm.toLowerCase())
+    (game.developerId?.name || 'Unknown').toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   if (loading) {
@@ -186,12 +186,12 @@ export default function ManageGames() {
               <div style={{
                 width: '100%',
                 height: '180px',
-                background: game.coverImage 
-                  ? `url(${game.coverImage}) center/cover` 
+                background: game.media?.images?.[0]
+                  ? `url(${game.media.images[0]}) center/cover` 
                   : 'linear-gradient(135deg, #a259ff 0%, #ff6b9d 100%)',
                 position: 'relative'
               }}>
-                {!game.coverImage && (
+                {!game.media?.images?.[0] && (
                   <div style={{
                     position: 'absolute',
                     top: '50%',
@@ -246,7 +246,7 @@ export default function ManageGames() {
                   fontSize: '0.9rem',
                   marginBottom: '0.5rem'
                 }}>
-                  👨‍💻 {game.developer || 'Unknown'}
+                  👨‍💻 {game.developerId?.name || 'Unknown Developer'}
                 </p>
 
                 <p style={{

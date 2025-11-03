@@ -174,9 +174,7 @@ export default function AdminDashboard() {
         }}>
           {[
             { label: 'Manage Users', icon: '👥', link: '/admin/users', color: '#a259ff' },
-            { label: 'Manage Games', icon: '🎮', link: '/admin/games', color: '#ff6b9d' },
-            { label: 'View Reports', icon: '📊', link: '#', color: '#ffa500' },
-            { label: 'Settings', icon: '⚙️', link: '#', color: '#00d4aa' }
+            { label: 'Manage Games', icon: '🎮', link: '/admin/games', color: '#ff6b9d' }
           ].map((action, index) => (
             <Link
               key={index}
